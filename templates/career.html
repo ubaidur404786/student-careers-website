@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}{{ career.title }} - Student Careers{% endblock %}
+
+{% block content %}
+<main>
+    <div class="container">
+        <a href="/" class="back-link">Back to Careers</a>
+        <div class="career-detail">
+            <h1>{{ career.title }}</h1>
+            <p class="salary">{{ career.salary_range }}</p>
+            
+            <section>
+                <h2>Description</h2>
+                <p>{{ career.description }}</p>
+            </section>
+            
+            <section>
+                <h2>Required Skills</h2>
+                <ul class="skills-list">
+                    {% for skill in career.skills %}
+                    <li>{{ skill }}</li>
+                    {% endfor %}
+                </ul>
+            </section>
+            
+            <section>
+                <h2>Education Requirements</h2>
+                <p>{{ career.education }}</p>
+            </section>
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Student Careers{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="container">
+        <h1>Discover Your Future Career</h1>
+        <p>Explore various career paths and find the one that matches your skills and interests. Your journey to success starts here!</p>
+    </div>
+</section>
+
+<main>
+    <div class="container">
+        <h2 class="section-title">Explore Career Paths</h2>
+        <div class="careers-grid">
+            {% for career in careers %}
+            <div class="career-card">
+                <h3>{{ career.title }}</h3>
+                <p>{{ career.description }}</p>
+                <p class="salary">{{ career.salary_range }}</p>
+                <a href="/career/{{ career.id }}" class="btn">Learn More</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</main>
+{% endblock %}
