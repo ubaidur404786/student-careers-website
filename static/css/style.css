@@ -255,4 +255,13 @@ footer {
     .careers-grid {
         grid-template-columns: 1fr;
     }
+
+
+    #banner{
+      height: 326px;
+        width: 100%;
+        background-image: url('https://21fc256a-df97-4e82-b749-a8d696713843-00-11388ftb');
+        object-fit: cover;
+        margin-bottom: 20px
+    }
 }
