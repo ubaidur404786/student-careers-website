@@ -1,4 +1,4 @@
-# Jovian Careers - Student Careers Website
+# Student Careers Website
 
 A professional Flask-based job portal designed to help students explore various career paths and apply for opportunities. This project features dynamic job listings and a secure application system integrated with a database.
 
