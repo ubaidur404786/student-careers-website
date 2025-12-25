@@ -6,7 +6,11 @@ DATABASE_URL = os.environ["DATABASE_URL"]
 
 
 def get_connection():
-    return create_engine(DATABASE_URL)
+    return create_engine(
+        DATABASE_URL,
+        pool_recycle=300,
+        pool_pre_ping=True
+    )
 
 
 engine = get_connection()
