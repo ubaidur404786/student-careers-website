@@ -45,3 +45,9 @@ def add_application_to_db(job_id, data):
             "cover_letter": data['cover_letter']
         })
         conn.commit()
+
+def get_applications_from_db():
+    with engine.connect() as conn:
+        result = conn.execute(text("SELECT * FROM applications"))
+        apps = [dict(row._mapping) for row in result]
+    return  apps
