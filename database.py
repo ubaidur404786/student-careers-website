@@ -11,14 +11,33 @@ def get_connection():
 
 engine = get_connection()
 
-
+def load_job_from_db(id):
+    with engine.connect() as conn:
+        result = conn.execute(text("select * from jobs where id = :val"), {"val": id})
+        rows = result.all()
+        if len(rows) == 0:
+            return None
+        # Convert rows to dictionaries for easier access
+        return [dict(row._mapping) for row in rows]
+        
 ##get jobs from db
 def get_jobs_from_db():
     with engine.connect() as conn:
         result = conn.execute(text("select * from jobs"))
         result_all = result.all()
-        print(type(result_all))
+        # Convert to list of dictionaries
+        return [dict(row._mapping) for row in result_all]
 
-    dic_all = {value for index, value in enumerate(result_all)}
-    print(dic_all)
-    return dic_all
+def add_application_to_db(job_id, data):
+    with engine.connect() as conn:
+        query = text("INSERT INTO applications (job_id, full_name, email, phone, linkedin, github, cover_letter) VALUES (:job_id, :full_name, :email, :phone, :linkedin, :github, :cover_letter)")
+        conn.execute(query, {
+            "job_id": job_id,
+            "full_name": data['full_name'],
+            "email": data['email'],
+            "phone": data['phone'],
+            "linkedin": data.get('linkedin'),
+            "github": data.get('github'),
+            "cover_letter": data['cover_letter']
+        })
+        conn.commit()

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Application Submitted{% endblock %}
+
+{% block content %}
+<div class="container my-5 text-center">
+    <div class="card shadow p-5">
+        <h1 class="text-success mb-4">Application Submitted Successfully!</h1>
+        <p class="lead">Thank you, {{ application.full_name }}, for applying. We have received your application and will review it shortly.</p>
+        <div class="mt-4">
+            <a href="/" class="btn btn-primary">Back to Home</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
