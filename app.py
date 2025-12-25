@@ -35,20 +35,23 @@ def show_job(id):
 def apply_to_job():
     data = request.form
     job_id = data.get('job_id')
-    # We could also get job_title from form if needed, but job_id is enough for DB
     add_application_to_db(job_id, data)
     
-    # Send confirmation email
-    try:
-        msg = Message(
-            'Application Submitted Successfully',
-            sender=app.config['MAIL_USERNAME'],
-            recipients=[data['email']]
-        )
-        msg.body = f"Hello {data['full_name']},\n\nYour application for the position has been successfully submitted. We will reach out to you later after reviewing your profile.\n\nBest regards,\nStudent Careers Team"
-        mail.send(msg)
-    except Exception as e:
-        print(f"Error sending email: {e}")
+    # Attempt to send confirmation email
+    if app.config.get('MAIL_USERNAME') and app.config.get('MAIL_PASSWORD'):
+        try:
+            msg = Message(
+                'Application Submitted Successfully',
+                sender=app.config['MAIL_USERNAME'],
+                recipients=[data['email']]
+            )
+            msg.body = f"Hello {data['full_name']},\n\nYour application for the position has been successfully submitted. We will reach out to you later after reviewing your profile.\n\nBest regards,\nStudent Careers Team"
+            mail.send(msg)
+        except Exception as e:
+            # Log the error but don't fail the request
+            print(f"DEBUG: Email sending failed: {e}")
+    else:
+        print("DEBUG: Email credentials not configured. Skipping email.")
         
     return render_template("application_submitted.html", application=data)
 
