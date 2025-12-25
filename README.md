@@ -2,7 +2,7 @@
 
 A professional Flask-based job portal designed to help students explore various career paths and apply for opportunities. This project features dynamic job listings and a secure application system integrated with a database.
 
-- ** Visit this link for demo: ** https://student-careers-website-2d9n.onrender.com/
+- Visit this link for demo: https://student-careers-website-2d9n.onrender.com/
 
 
 ## Features
