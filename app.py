@@ -1,9 +1,19 @@
 from flask import Flask, render_template, jsonify, request
-
+from flask_mail import Mail, Message
+import os
 from database import get_jobs_from_db, load_job_from_db, add_application_to_db, get_applications_from_db
 
 app = Flask(__name__)
 
+# configuration of mail
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+
+mail = Mail(app)
 
 @app.route('/')
 def home():
@@ -27,6 +37,19 @@ def apply_to_job():
     job_id = data.get('job_id')
     # We could also get job_title from form if needed, but job_id is enough for DB
     add_application_to_db(job_id, data)
+    
+    # Send confirmation email
+    try:
+        msg = Message(
+            'Application Submitted Successfully',
+            sender=app.config['MAIL_USERNAME'],
+            recipients=[data['email']]
+        )
+        msg.body = f"Hello {data['full_name']},\n\nYour application for the position has been successfully submitted. We will reach out to you later after reviewing your profile.\n\nBest regards,\nStudent Careers Team"
+        mail.send(msg)
+    except Exception as e:
+        print(f"Error sending email: {e}")
+        
     return render_template("application_submitted.html", application=data)
 
 
