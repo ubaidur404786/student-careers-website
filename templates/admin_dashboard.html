@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Admin Dashboard</h1>
+        <a href="/admin/logout" class="btn btn-outline-danger">Logout</a>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-body">
+            <h5 class="card-title mb-4">Recent Applications</h5>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Applicant</th>
+                            <th>Job Title</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in applications %}
+                        <tr>
+                            <td>{{ app.full_name }}</td>
+                            <td>{{ app.job_title }}</td>
+                            <td>{{ app.email }}</td>
+                            <td>
+                                <span class="badge bg-{{ 'warning' if app.status == 'pending' else 'success' if app.status == 'accepted' else 'danger' }}">
+                                    {{ app.status|capitalize }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if app.status == 'pending' %}
+                                <form method="POST" action="/admin/application/{{ app.id }}/status" class="d-inline">
+                                    <input type="hidden" name="status" value="accepted">
+                                    <button type="submit" class="btn btn-sm btn-success">Accept</button>
+                                </form>
+                                <form method="POST" action="/admin/application/{{ app.id }}/status" class="d-inline">
+                                    <input type="hidden" name="status" value="rejected">
+                                    <button type="submit" class="btn btn-sm btn-danger">Reject</button>
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -48,6 +48,19 @@ def add_application_to_db(job_id, data):
 
 def get_applications_from_db():
     with engine.connect() as conn:
-        result = conn.execute(text("SELECT * FROM applications"))
+        result = conn.execute(text("SELECT a.*, j.title as job_title FROM applications a JOIN jobs j ON a.job_id = j.id"))
         apps = [dict(row._mapping) for row in result]
-    return  apps
+    return apps
+
+def update_application_status(app_id, status):
+    with engine.connect() as conn:
+        # Update status
+        conn.execute(text("UPDATE applications SET status = :s WHERE id = :id"), {"s": status, "id": app_id})
+        conn.commit()
+        
+        # Get application and job details for the email
+        result = conn.execute(text("SELECT a.*, j.title as job_title FROM applications a JOIN jobs j ON a.job_id = j.id WHERE a.id = :id"), {"id": app_id})
+        row = result.first()
+        if row:
+            return dict(row._mapping)
+    return None

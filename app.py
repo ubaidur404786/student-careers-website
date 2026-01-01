@@ -1,9 +1,10 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, session, redirect, url_for
 from flask_mail import Mail, Message
 import os
-from database import get_jobs_from_db, load_job_from_db, add_application_to_db, get_applications_from_db
+from database import get_jobs_from_db, load_job_from_db, add_application_to_db, get_applications_from_db, update_application_status
 
 app = Flask(__name__)
+app.secret_key = os.environ.get('SESSION_SECRET', 'dev_key_123')
 
 # configuration of mail
 app.config['MAIL_SERVER']='smtp.gmail.com'
@@ -14,6 +15,10 @@ app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 
 mail = Mail(app)
+
+# Static admin credentials for testing
+ADMIN_USERNAME = "admin"
+ADMIN_PASSWORD = "password123"
 
 @app.route('/')
 def home():
@@ -55,6 +60,59 @@ def apply_to_job():
         
     return render_template("application_submitted.html", application=data)
 
+
+@app.route("/admin/login", methods=['GET', 'POST'])
+def admin_login():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+            session['admin_logged_in'] = True
+            return redirect(url_for('admin_dashboard'))
+        return render_template("admin_login.html", error="Invalid credentials")
+    return render_template("admin_login.html")
+
+@app.route("/admin/logout")
+def admin_logout():
+    session.pop('admin_logged_in', None)
+    return redirect(url_for('admin_login'))
+
+@app.route("/admin/dashboard")
+def admin_dashboard():
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('admin_login'))
+    apps = get_applications_from_db()
+    return render_template("admin_dashboard.html", applications=apps)
+
+@app.route("/admin/application/<int:app_id>/status", methods=['POST'])
+def update_status(app_id):
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('admin_login'))
+    
+    new_status = request.form.get('status')
+    app_data = update_application_status(app_id, new_status)
+    
+    if app_data:
+        # Send status update email
+        if app.config.get('MAIL_USERNAME') and app.config.get('MAIL_PASSWORD'):
+            try:
+                subject = f"Update on your application for {app_data['job_title']}"
+                msg = Message(
+                    subject,
+                    sender=app.config['MAIL_USERNAME'],
+                    recipients=[app_data['email']]
+                )
+                if new_status == 'accepted':
+                    body = f"Hello {app_data['full_name']},\n\nWe are pleased to inform you that your application for the {app_data['job_title']} position has been accepted. We will contact you soon with the next steps."
+                else:
+                    body = f"Hello {app_data['full_name']},\n\nThank you for your interest in the {app_data['job_title']} position. Unfortunately, we have decided not to proceed with your application at this time."
+                
+                msg.body = body + "\n\nBest regards,\nStudent Careers Team"
+                mail.send(msg)
+            except Exception as e:
+                print(f"DEBUG: Status email failed: {e}")
+            
+    return redirect(url_for('admin_dashboard'))
 
 @app.route("/api/jobs/<id>")
 def show_job_api(id):
