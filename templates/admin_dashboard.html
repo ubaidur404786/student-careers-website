@@ -36,14 +36,16 @@
                             </td>
                             <td>
                                 {% if app.status == 'pending' %}
-                                <form method="POST" action="/admin/application/{{ app.id }}/status" class="d-inline">
-                                    <input type="hidden" name="status" value="accepted">
-                                    <button type="submit" class="btn btn-sm btn-success">Accept</button>
-                                </form>
-                                <form method="POST" action="/admin/application/{{ app.id }}/status" class="d-inline">
-                                    <input type="hidden" name="status" value="rejected">
-                                    <button type="submit" class="btn btn-sm btn-danger">Reject</button>
-                                </form>
+                                <div class="btn-group">
+                                    <form method="POST" action="/admin/application/{{ app.id }}/status" class="d-inline">
+                                        <input type="hidden" name="status" value="accepted">
+                                        <button type="submit" class="btn btn-sm btn-success me-1">Accept</button>
+                                    </form>
+                                    <form method="POST" action="/admin/application/{{ app.id }}/status" class="d-inline">
+                                        <input type="hidden" name="status" value="rejected">
+                                        <button type="submit" class="btn btn-sm btn-danger">Reject</button>
+                                    </form>
+                                </div>
                                 {% endif %}
                             </td>
                         </tr>
