@@ -121,7 +121,7 @@ main {
 
 .btn {
     display: inline-block;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #000000 0%, #3d304a 100%);
     color: white;
     padding: 0.6rem 1.2rem;
     border-radius: 5px;
@@ -263,5 +263,16 @@ footer {
         background-image: url('https://21fc256a-df97-4e82-b749-a8d696713843-00-11388ftb');
         object-fit: cover;
         margin-bottom: 20px
+    }
+
+    .button_color{
+        background-color: #743e3e;
+        color: white;
+        border: 1px solid;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
     }
 }
