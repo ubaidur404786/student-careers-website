@@ -5,3 +5,5 @@ pymysql
 flask-sqlalchemy
 psycopg2-binary
 flask-mail
+psycopg2-binary
+psycopg2-binary

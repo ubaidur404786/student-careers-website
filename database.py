@@ -6,8 +6,26 @@ DATABASE_URL = os.environ["DATABASE_URL"]
 
 
 def get_connection():
+    # Prefer Replit Postgres environment variables if available
+    pg_url = os.environ.get("DATABASE_URL")
+    
+    # If DATABASE_URL is not set or looks like the old MySQL one, try to construct from PG vars
+    if not pg_url or "mysql" in pg_url:
+        user = os.environ.get("PGUSER")
+        password = os.environ.get("PGPASSWORD")
+        host = os.environ.get("PGHOST")
+        port = os.environ.get("PGPORT")
+        database = os.environ.get("PGDATABASE")
+        
+        if all([user, password, host, port, database]):
+            pg_url = f"postgresql://{user}:{password}@{host}:{port}/{database}"
+    
+    # Ensure we use psycopg2 driver for Postgres
+    if pg_url and pg_url.startswith("postgresql://"):
+        pg_url = pg_url.replace("postgresql://", "postgresql+psycopg2://", 1)
+    
     return create_engine(
-        DATABASE_URL,
+        pg_url,
         pool_recycle=300,
         pool_pre_ping=True
     )
