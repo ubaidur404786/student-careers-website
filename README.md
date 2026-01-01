@@ -62,3 +62,11 @@ A professional Flask-based job portal designed to help students explore various 
    python app.py
    ```
    The server will start on `0.0.0.0:5000`.
+## Webpage
+   ![image](image.png)
+   ![image](image_2.png)
+   ![image](image_4.png)
+   ![image](image_3.png)
+   ![image](image_5.png)
+   
+   
